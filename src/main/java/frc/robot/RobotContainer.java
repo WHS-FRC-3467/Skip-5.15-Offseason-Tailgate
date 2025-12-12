@@ -72,16 +72,10 @@ import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.flywheel.Flywheel;
 import frc.robot.subsystems.flywheel.FlywheelConstants;
-import frc.robot.subsystems.leds.LEDs;
-import frc.robot.subsystems.leds.LEDsConstants;
-import frc.robot.subsystems.objectdetector.ObjectDetector;
-import frc.robot.subsystems.objectdetector.ObjectDetectorConstants;
-import frc.robot.subsystems.objectdetector.ObjectDetector;
-import frc.robot.subsystems.objectdetector.ObjectDetectorConstants;
-import frc.robot.subsystems.servo1.Servo1;
-import frc.robot.subsystems.servo1.Servo1Constants;
-import frc.robot.subsystems.superstructure.Superstructure;
-import frc.robot.subsystems.superstructure.SuperstructureConstants;
+import frc.robot.subsystems.hood.HoodSubsystem;
+import frc.robot.subsystems.hood.HoodSubsystemConstants;
+import frc.robot.subsystems.indexer.IndexerSubsystem;
+import frc.robot.subsystems.indexer.IndexerSubsystemConstants;
 import frc.robot.subsystems.turret.TurretSubsystem;
 import frc.robot.subsystems.turret.TurretSubsystemConstants;
 import frc.robot.subsystems.vision.VisionConstants;
@@ -112,14 +106,12 @@ public class RobotContainer {
 
     // Subsystems
     public final Drive drive;
-    private final LEDs leds;
     private final LaserCAN1 laserCAN1;
     private final BeamBreak1 beamBreak1;
-    private final Servo1 servo1;
     private final Flywheel flywheel;
-    private final ObjectDetector objectDetector;
-    private final Superstructure superstructure;
     private final TurretSubsystem turret;
+    private final HoodSubsystem hood;
+    private final IndexerSubsystem indexer;
 
     // Controller
     private final CommandXboxControllerExtended controller = new CommandXboxControllerExtended(0);
@@ -137,12 +129,10 @@ public class RobotContainer {
         drive = DriveConstants.get();
         laserCAN1 = LaserCAN1Constants.get();
         flywheel = FlywheelConstants.get();
-        leds = LEDsConstants.get();
         beamBreak1 = BeamBreak1Constants.get();
-        superstructure = SuperstructureConstants.get();
-        servo1 = Servo1Constants.get();
-        objectDetector = ObjectDetectorConstants.get();
         turret = TurretSubsystemConstants.get();
+        hood = HoodSubsystemConstants.get();
+        indexer = IndexerSubsystemConstants.get();
         VisionConstants.create();
 
         conditionalChooser = new LoggedDashboardChooser<>("Conditional Choice");
@@ -230,19 +220,8 @@ public class RobotContainer {
                 MetersPerSecond.of(0.0), false, PathConstants.PATHGENERATION_DRIVE_TOLERANCE,
                 PathConstants.PATHGENERATION_ROT_TOLERANCE));
 
-        SmartDashboard.putData("Superstructure: Stow",
-            superstructure.setGoal(Superstructure.Setpoint.STOW));
-        SmartDashboard.putData("Superstructure: Raised",
-            superstructure.setGoal(Superstructure.Setpoint.RAISED));
         SmartDashboard.putData("Turret: Home", turret.homeZero());
         SmartDashboard.putData("Turret: Test", turret.move(Degrees.of(150)));
-        LoggedTunableNumber ballVel = new LoggedTunableNumber("Ball Sim Velocity (fps)", 15);
-        SmartDashboard.putData("Shoot Ball", Commands
-            .runOnce(() -> BallSimulator.launch(FeetPerSecond.of(ballVel.getAsDouble()))));
-
-        GamePieceVisualizer algaeViz =
-            new GamePieceVisualizer("Algae #1", new Pose3d(1, 1, 1, new Rotation3d()));
-        SmartDashboard.putData("Hide Algae", Commands.runOnce(() -> algaeViz.hide()));
 
         LoggedTuneableProfiledPID linearController =
             new LoggedTuneableProfiledPID("DriveToPose/LinearController", 3.0, 0, 0.1, 0, 3.0);
@@ -250,23 +229,6 @@ public class RobotContainer {
         SmartDashboard.putData("DriveToPose Command",
             new DriveToPose(drive, () -> new Pose2d(5, 5, Rotation2d.fromDegrees(90)))
                 .withTolerance(Inches.of(3), Degrees.of(5)));
-
-        Command steppableCommand = new SteppableCommandGroup(
-            controller.x(),
-            controller.y(),
-            Commands.runOnce(() -> System.out.println("Step 1")),
-            Commands.runOnce(() -> System.out.println("Step 2")),
-            Commands.runOnce(() -> System.out.println("Step 3")));
-
-        SmartDashboard.putData("Steppable Command", steppableCommand);
-
-        // controller.x()
-        // .whileTrue(new DriveToPose(drive, () -> new Pose2d(5, 5, Rotation2d.fromDegrees(90)))
-        // .withTolerance(Inches.of(3), Degrees.of(5)));
-
-        // controller.x()
-        // .whileTrue(new AlignToPose(drive, () -> new Pose2d(5, 5, Rotation2d.fromDegrees(0)),
-        // AlignMode.STRAFE, () -> controller.getRightX()));
     }
 
     /**

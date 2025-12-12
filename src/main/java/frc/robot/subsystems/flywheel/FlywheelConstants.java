@@ -17,6 +17,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.MomentOfInertia;
 import frc.lib.io.motor.MotorIOTalonFX;
 import frc.lib.io.motor.MotorIOTalonFXSim;
+import frc.lib.io.motor.MotorIOTalonFX.TalonFXFollower;
 import frc.lib.mechanisms.flywheel.FlywheelMechanism;
 import frc.lib.mechanisms.flywheel.FlywheelMechanismReal;
 import frc.lib.mechanisms.flywheel.FlywheelMechanismSim;
@@ -82,10 +83,13 @@ public class FlywheelConstants {
         switch (Constants.currentMode) {
             case REAL:
                 return new Flywheel(new FlywheelMechanismReal(NAME,
-                    new MotorIOTalonFX(NAME, getFXConfig(), Ports.flywheel)));
+                    new MotorIOTalonFX(NAME, getFXConfig(), Ports.flywheelMain, new TalonFXFollower(
+                        Ports.flywheelFollower, false))));
             case SIM:
                 return new Flywheel(new FlywheelMechanismSim(NAME,
-                    new MotorIOTalonFXSim(NAME, getFXConfig(), Ports.flywheel),
+                    new MotorIOTalonFXSim(NAME, getFXConfig(), Ports.flywheelMain,
+                        new TalonFXFollower(
+                            Ports.flywheelFollower, false)),
                     DCMOTOR, MOI, TOLERANCE));
             case REPLAY:
                 return new Flywheel(new FlywheelMechanism() {});

@@ -27,7 +27,14 @@ public class Ports {
 
     public static final Device.CAN laserCAN1 = new CAN(0, "rio");
     public static final Device.CAN lights = new CAN(1, "rio");
-    public static final Device.CAN flywheel = new CAN(2, "rio");
+
+    public static final Device.CAN flywheelMain = new CAN(2, "rio");
+    public static final Device.CAN flywheelFollower = new CAN(10, "rio");
+
+    public static final Device.CAN hood = new CAN(11, "rio");
+
+    public static final Device.CAN indexerBottom = new CAN(12, "rio");
+    public static final Device.CAN indexerTop = new CAN(13, "rio");
 
     public static final Device.CAN linear = new CAN(5, "rio");
 
