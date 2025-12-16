@@ -142,7 +142,9 @@ public class LoggedDashboardChooser<V> extends LoggedNetworkInput {
             selectedValue = sendableChooser.getSelected();
         }
         Logger.processInputs(prefix, inputs);
-
+        if (selectedValue == null) {
+            selectedValue = lastSelected;
+        }
         if (listener != null && !selectedValue.equals(lastSelected)) {
             listener.accept(get());
         }

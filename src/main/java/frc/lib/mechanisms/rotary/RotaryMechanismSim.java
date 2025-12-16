@@ -52,15 +52,20 @@ public class RotaryMechanismSim extends RotaryMechanism {
         Optional<AbsoluteEncoderIOSim> absoluteEncoderSim)
     {
         super(name, characteristics);
+        double gearing;
 
         if (momentOfInertia.isEquivalent(KilogramSquareMeters.zero()))
             throw new IllegalArgumentException(
                 "momentOfInertia must be greater than zero!");
-
+        if (io.getRotorToSensorRatio() * io.getSensorToMechanismRatio() > 0.0) {
+            gearing = io.getRotorToSensorRatio() * io.getSensorToMechanismRatio();
+        } else {
+            gearing = 1.0;
+        }
         this.io = io;
         sim = new SingleJointedArmSim(
             dcMotor,
-            io.getRotorToSensorRatio() * io.getSensorToMechanismRatio(),
+            gearing,
             momentOfInertia.in(KilogramSquareMeters),
             characteristics.armLength().in(Meters),
             characteristics.minAngle().in(Radians),

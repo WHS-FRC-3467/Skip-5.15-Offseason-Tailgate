@@ -49,4 +49,5 @@ public class Ports {
     public static final Device.CAN TurretSubsystemMotorMain = new CAN(9, "rio");
 
     public static final Device.PWM servo1 = new PWM(1);
+    public static final Device.CAN intake = new CAN(40, "rio");
 }

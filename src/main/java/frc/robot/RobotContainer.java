@@ -76,6 +76,8 @@ import frc.robot.subsystems.hood.HoodSubsystem;
 import frc.robot.subsystems.hood.HoodSubsystemConstants;
 import frc.robot.subsystems.indexer.IndexerSubsystem;
 import frc.robot.subsystems.indexer.IndexerSubsystemConstants;
+import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.intake.IntakeConstants;
 import frc.robot.subsystems.turret.TurretSubsystem;
 import frc.robot.subsystems.turret.TurretSubsystemConstants;
 import frc.robot.subsystems.vision.VisionConstants;
@@ -91,8 +93,12 @@ import static edu.wpi.first.units.Units.Volts;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
+import org.littletonrobotics.junction.Logger;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.simulation.VisionSystemSim;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -100,10 +106,10 @@ import org.photonvision.simulation.VisionSystemSim;
  * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
  * subsystems, commands, and button mappings) should be declared here.
  */
+
 @SuppressWarnings("unused")
 public class RobotContainer {
     private final RobotState robotState = RobotState.getInstance();
-
     // Subsystems
     public final Drive drive;
     private final LaserCAN1 laserCAN1;
@@ -112,6 +118,7 @@ public class RobotContainer {
     private final TurretSubsystem turret;
     private final HoodSubsystem hood;
     private final IndexerSubsystem indexer;
+    private final Intake intake;
 
     // Controller
     private final CommandXboxControllerExtended controller = new CommandXboxControllerExtended(0);
@@ -133,6 +140,7 @@ public class RobotContainer {
         turret = TurretSubsystemConstants.get();
         hood = HoodSubsystemConstants.get();
         indexer = IndexerSubsystemConstants.get();
+        intake = IntakeConstants.get();
         VisionConstants.create();
 
         conditionalChooser = new LoggedDashboardChooser<>("Conditional Choice");
@@ -223,13 +231,25 @@ public class RobotContainer {
         SmartDashboard.putData("Turret: Home", turret.homeZero());
         SmartDashboard.putData("Turret: Test", turret.move(Degrees.of(150)));
 
+        SmartDashboard.putData("Intake: NONE",
+            (intake.intakeCommand(Intake.State.NONE).andThen(intake.stop().onlyIf(() -> intake
+                .getVelocity() == edu.wpi.first.units.Units.RadiansPerSecond.of(0.0)))));
+        SmartDashboard.putData("Intake: PULL",
+            intake.intakeCommand(Intake.State.PULL));
+        SmartDashboard.putData("Intake: EXPEL",
+            intake.intakeCommand(Intake.State.EXPEL));
+
         LoggedTuneableProfiledPID linearController =
             new LoggedTuneableProfiledPID("DriveToPose/LinearController", 3.0, 0, 0.1, 0, 3.0);
 
         SmartDashboard.putData("DriveToPose Command",
             new DriveToPose(drive, () -> new Pose2d(5, 5, Rotation2d.fromDegrees(90)))
                 .withTolerance(Inches.of(3), Degrees.of(5)));
+
+
     }
+
+
 
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
