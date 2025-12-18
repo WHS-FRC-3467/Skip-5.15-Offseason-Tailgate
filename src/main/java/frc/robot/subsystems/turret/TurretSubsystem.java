@@ -6,7 +6,9 @@ package frc.robot.subsystems.turret;
 
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
+import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -53,7 +55,23 @@ public class TurretSubsystem extends SubsystemBase {
                 PIDSlot.SLOT_0)),
             Commands.waitUntil(() -> nearGoal(position)));
     }
+
     // make a method to home and zero the motor
+    public Command jog(double magnitude)
+    {
+        return Commands.sequence(
+            this.runOnce(() -> io.runVelocity(
+                Units.RadiansPerSecond.of(magnitude),
+                Units.RadiansPerSecond.of(magnitude).per(Second),
+                PIDSlot.SLOT_0)))
+            .finallyDo(
+                () -> stop());
+    }
+
+    private Command stop()
+    {
+        return Commands.sequence(this.runOnce(() -> io.runBrake()));
+    }
 
     public Command homeZero()
     {
