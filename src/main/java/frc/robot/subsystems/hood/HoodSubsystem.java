@@ -58,18 +58,16 @@ public class HoodSubsystem extends SubsystemBase {
 
     public Command jog(double magnitude)
     {
-        return Commands.sequence(
-            this.runOnce(() -> io.runVelocity(
-                Units.RadiansPerSecond.of(magnitude),
-                Units.RadiansPerSecond.of(magnitude).per(Second),
-                PIDSlot.SLOT_0)))
-            .finallyDo(
-                () -> stop());
+
+        return this.runOnce(() -> io.runVelocity(
+            Units.RadiansPerSecond.of(magnitude),
+            Units.RadiansPerSecond.of(magnitude).per(Second),
+            PIDSlot.SLOT_0)).withName("jog");
     }
 
-    private Command stop()
+    public Command stop()
     {
-        return Commands.sequence(this.runOnce(() -> io.runBrake()));
+        return runOnce(() -> io.runBrake()).withName("Stop");
     }
 
     public Command homeZero()

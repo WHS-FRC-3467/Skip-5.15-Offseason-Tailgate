@@ -234,34 +234,17 @@ public class RobotContainer {
                 MetersPerSecond.of(0.0), false, PathConstants.PATHGENERATION_DRIVE_TOLERANCE,
                 PathConstants.PATHGENERATION_ROT_TOLERANCE));
         controller.rightTrigger().whileTrue(flywheel.shoot());
+
+        controller.rightTrigger().whileFalse(flywheel.stop());
         controller.leftTrigger().onTrue(intake.intakeCommand(Intake.State.PULL))
             .onFalse(intake.intakeCommand(Intake.State.EXPEL));
 
-        controller.povUp().whileTrue(Commands.run(() -> {
-            hood.jog(1.0);
-        }));
-        controller.povDown().whileTrue(Commands.run(() -> {
-            hood.jog(-1.0);
-        }));
-        controller.povRight().whileTrue(Commands.run(() -> {
-            turret.jog(1.0);
-        }));
-        controller.povLeft().whileTrue(Commands.run(() -> {
-            turret.jog(-1.0);
-        }));
+        controller.povUp().whileTrue(hood.jog(1.0)).onFalse(hood.stop());
+        controller.povDown().whileTrue(hood.jog(-1.0)).onFalse(hood.stop());
+        controller.povRight().whileTrue(turret.jog(-1.0)).onFalse(turret.stop());
+        controller.povLeft().whileTrue(turret.jog(1.0)).onFalse(turret.stop());
 
-        controller.povUp().whileFalse(Commands.run(() -> {
-            hood.jog(0.0);
-        }));
-        controller.povDown().whileFalse(Commands.run(() -> {
-            hood.jog(0.0);
-        }));
-        controller.povRight().whileFalse(Commands.run(() -> {
-            turret.jog(0.0);
-        }));
-        controller.povLeft().whileFalse(Commands.run(() -> {
-            turret.jog(0.0);
-        }));
+
 
         controller.y().onTrue(indexer.run());
 
@@ -269,6 +252,7 @@ public class RobotContainer {
 
         SmartDashboard.putData("Turret: Home", turret.homeZero());
         SmartDashboard.putData("Turret: Test", turret.move(Degrees.of(150)));
+        SmartDashboard.putData("Turret: jog", turret.jog(1.0));
 
         SmartDashboard.putData("Intake: NONE",
             (intake.intakeCommand(Intake.State.NONE).andThen(intake.stop().onlyIf(() -> intake

@@ -325,7 +325,7 @@ public class MotorIOTalonFX implements MotorIO {
     @Override
     public void runCurrent(Current current, double dutyCycle)
     {
-        double dutyCyclePercent = MathUtil.clamp(dutyCycle, 0.0, 1.0);
+        double dutyCyclePercent = MathUtil.clamp(dutyCycle, -1.0, 1.0);
         motor.setControl(currentControl.withOutput(current).withMaxAbsDutyCycle(dutyCyclePercent));
     }
 
@@ -337,7 +337,7 @@ public class MotorIOTalonFX implements MotorIO {
     @Override
     public void runDutyCycle(double dutyCycle)
     {
-        double dutyCyclePercent = MathUtil.clamp(dutyCycle, 0.0, 1.0);
+        double dutyCyclePercent = MathUtil.clamp(dutyCycle, -1.0, 1.0);
         motor.setControl(dutyCycleControl.withOutput(dutyCyclePercent));
     }
 
