@@ -28,26 +28,19 @@ public class Ports {
     public static final Device.CAN laserCAN1 = new CAN(0, "rio");
     public static final Device.CAN lights = new CAN(1, "rio");
 
-    public static final Device.CAN flywheelMain = new CAN(2, "rio");
-    public static final Device.CAN flywheelFollower = new CAN(10, "rio");
+    public static final Device.CAN flywheelMain = new CAN(18, "rio");
+    public static final Device.CAN flywheelFollower = new CAN(19, "rio");
 
-    public static final Device.CAN hood = new CAN(11, "rio");
+    public static final Device.CAN hood = new CAN(21, "rio");
 
-    public static final Device.CAN indexerBottom = new CAN(12, "rio");
-    public static final Device.CAN indexerTop = new CAN(13, "rio");
-
-    public static final Device.CAN linear = new CAN(5, "rio");
+    public static final Device.CAN indexerBottom = new CAN(22, "rio");
+    public static final Device.CAN indexerTop = new CAN(23, "rio");
 
     public static final Device.DIO diobeambreak = new DIO(0);
 
     public static final Device.CAN pdh = new CAN(50, "rio");
 
-    public static final Device.CAN RotarySubsystemMotorMain = new CAN(3, "rio");
-    public static final Device.CAN RotarySubsystemMotorFollower = new CAN(4, "rio");
-    public static final Device.CAN RotarySubsystemEncoder = new CAN(6, "rio");
+    public static final Device.CAN TurretSubsystemMotorMain = new CAN(24, "rio");
 
-    public static final Device.CAN TurretSubsystemMotorMain = new CAN(9, "rio");
-
-    public static final Device.PWM servo1 = new PWM(1);
-    public static final Device.CAN intake = new CAN(40, "rio");
+    public static final Device.CAN intake = new CAN(25, "rio");
 }

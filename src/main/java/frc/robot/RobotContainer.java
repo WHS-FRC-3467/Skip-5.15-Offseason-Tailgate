@@ -29,6 +29,9 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.AngleUnit;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.MutAngle;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -127,6 +130,8 @@ public class RobotContainer {
     private final LoggedDashboardChooser<AutoCommand> autoChooser;
     private final LoggedDashboardChooser<Boolean> conditionalChooser;
     public static Field2d autoPreviewField = new Field2d();
+    double hoodAngleDegrees;
+    double turretAngleDegrees;
 
     /**
      * The container for the robot. Contains subsystems, IO devices, and commands.
@@ -170,6 +175,7 @@ public class RobotContainer {
 
         GamePieceVisualizer algae = new GamePieceVisualizer("Algae",
             new Pose3d(new Translation3d(3, 3, 1), new Rotation3d(0, 0, 0)));
+
     }
 
     /**
@@ -227,9 +233,26 @@ public class RobotContainer {
                 new Pose2d(6, 6, Rotation2d.k180deg), PathConstants.ON_THE_FLY_PATH_CONSTRAINTS,
                 MetersPerSecond.of(0.0), false, PathConstants.PATHGENERATION_DRIVE_TOLERANCE,
                 PathConstants.PATHGENERATION_ROT_TOLERANCE));
+        controller.rightTrigger().whileTrue(flywheel.shoot());
+
+        controller.rightTrigger().whileFalse(flywheel.stop());
+        controller.leftTrigger().onTrue(intake.intakeCommand(Intake.State.PULL))
+            .onFalse(intake.intakeCommand(Intake.State.EXPEL));
+
+        controller.povUp().whileTrue(hood.jog(1.0)).onFalse(hood.stop());
+        controller.povDown().whileTrue(hood.jog(-1.0)).onFalse(hood.stop());
+        controller.povRight().whileTrue(turret.jog(-1.0)).onFalse(turret.stop());
+        controller.povLeft().whileTrue(turret.jog(1.0)).onFalse(turret.stop());
+
+
+
+        controller.y().onTrue(indexer.run());
+
+
 
         SmartDashboard.putData("Turret: Home", turret.homeZero());
         SmartDashboard.putData("Turret: Test", turret.move(Degrees.of(150)));
+        SmartDashboard.putData("Turret: jog", turret.jog(1.0));
 
         SmartDashboard.putData("Intake: NONE",
             (intake.intakeCommand(Intake.State.NONE).andThen(intake.stop().onlyIf(() -> intake
@@ -303,4 +326,5 @@ public class RobotContainer {
                 false);
         }
     }
+
 }

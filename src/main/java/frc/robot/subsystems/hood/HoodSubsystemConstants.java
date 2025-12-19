@@ -44,8 +44,8 @@ public class HoodSubsystemConstants {
         CRUISE_VELOCITY.div(0.1).per(Units.Second);
     public static final Velocity<AngularAccelerationUnit> JERK = ACCELERATION.per(Second);
 
-    private static final double ROTOR_TO_SENSOR = (69.09 / 1.0);
-    private static final double SENSOR_TO_MECHANISM = (0.0 / 1.0);
+    private static final double ROTOR_TO_SENSOR = (1.0 / 1.0);
+    private static final double SENSOR_TO_MECHANISM = (69.09 / 1.0);
 
     public static final Angle MIN_ANGLE = Degrees.of(0.0);
     public static final Angle MAX_ANGLE = Degrees.of(33.0);

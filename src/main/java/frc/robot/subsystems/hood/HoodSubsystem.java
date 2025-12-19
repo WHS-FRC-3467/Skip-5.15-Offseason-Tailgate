@@ -6,7 +6,9 @@ package frc.robot.subsystems.hood;
 
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
+import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -52,6 +54,20 @@ public class HoodSubsystem extends SubsystemBase {
                 HoodSubsystemConstants.JERK,
                 PIDSlot.SLOT_0)),
             Commands.waitUntil(() -> nearGoal(position)));
+    }
+
+    public Command jog(double magnitude)
+    {
+
+        return this.runOnce(() -> io.runVelocity(
+            Units.RadiansPerSecond.of(magnitude),
+            Units.RadiansPerSecond.of(magnitude).per(Second),
+            PIDSlot.SLOT_0)).withName("jog");
+    }
+
+    public Command stop()
+    {
+        return runOnce(() -> io.runBrake()).withName("Stop");
     }
 
     public Command homeZero()
